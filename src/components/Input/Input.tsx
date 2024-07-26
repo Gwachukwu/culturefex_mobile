@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { colors, fonts } from "../../utils/constant";
 import Icon from "react-native-vector-icons/Entypo";
+import { colors } from "../../styles/colors";
+import { fonts } from "../../styles/fonts";
 
 // Extend the InputProps interface
 interface InputProps {

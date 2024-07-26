@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
-import { colors, fonts } from "../utils/constant";
+import { colors } from "../styles/colors";
+import { fonts } from "./fonts";
 
 export const authStyles = StyleSheet.create({
     container: {
