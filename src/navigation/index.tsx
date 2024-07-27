@@ -1,6 +1,6 @@
 // navigation/RootNavigation.tsx
 
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -15,31 +15,13 @@ import Profile from '../screens/Profile';
 import HeaderLeft from '../components/Header/HeaderLeft';
 import HeaderRight from '../components/Header/HeaderRight';
 import { fonts } from '../styles/fonts';
+import AuthProvider from '../context/AuthContextProvider';
+import { AuthContext } from '../context/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
 function StackNavigator() {
-  const [user, setUser] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const userData = await AsyncStorage.getItem('user');
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user from AsyncStorage', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUser();
-  }, []);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
+const {user} = useContext(AuthContext)
 
   return (
     <Stack.Navigator
@@ -79,10 +61,12 @@ function StackNavigator() {
 export default function RootNavigation() {
   return (
     <NavigationContainer>
+      <AuthProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={colors.primary} />
         <StackNavigator />
       </SafeAreaView>
+      </AuthProvider>
     </NavigationContainer>
   );
 }

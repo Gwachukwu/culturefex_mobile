@@ -1,16 +1,16 @@
-// // AuthContext.tsx
+import React, {createContext} from 'react';
+import {AuthContextType, IAuthData} from './types';
 
-// import React, { createContext } from 'react';
+const defaultAuthContextValue: AuthContextType = {
+  isLoading: true,
+  isSignedOut: true,
+  user: null,
+  signIn: async (data: IAuthData) => {},
+  signOut: async () => {},
+  signUp: async (data: IAuthData) => {},
+};
 
-// // Define the shape of the context value
-// interface AuthContextType {
-//   user: string | null;
-// }
-
-// // Create a default context value
-// const defaultAuthContextValue: AuthContextType = {
-//   user: null,
-// };
-
-// // Create the context with the default value
-// export const AuthContext = createContext<any>(defaultAuthContextValue);
+// Create the context with the default value
+export const AuthContext = createContext<AuthContextType>(
+  defaultAuthContextValue,
+);

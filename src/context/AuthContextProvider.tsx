@@ -1,114 +1,109 @@
-// import * as React from 'react';
-// import {AuthContext} from './authContext';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {Alert} from 'react-native';
-// import { auth } from '../utils/firebase';
-// import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import React, {useReducer, useEffect, useMemo} from 'react';
+import {AuthContext} from './AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Alert} from 'react-native';
+import {auth} from '../utils/firebase';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+} from 'firebase/auth';
+import {IAuthData} from './types';
 
-// export default function AuthProvider({children}: any) {
-//   const [state, dispatch] = React.useReducer(
-//     (prevState: any, action: any) => {
-//       switch (action.type) {
-//         case 'RESTORE_TOKEN':
-//           return {
-//             ...prevState,
-//             user: action.user,
-//             isLoading: false,
-//           };
-//         case 'SIGN_IN':
-//           return {
-//             ...prevState,
-//             isSignout: false,
-//             user: action.user,
-//           };
-//         case 'SIGN_OUT':
-//           return {
-//             ...prevState,
-//             isSignout: true,
-//             user: null,
-//           };
-//       }
-//     },
-//     {
-//       isLoading: true,
-//       isSignout: false,
-//       user: null,
-//     },
-//   );
+interface AuthState {
+  isLoading: boolean;
+  isSignedOut: boolean;
+  user: string | null;
+}
 
-//   React.useEffect(() => {
-//     // Fetch the token from storage then navigate to our appropriate place
-//     const bootstrapAsync = async () => {
-//       let user;
+type Action =
+  | {type: 'RESTORE_USER'; user: string | null}
+  | {type: 'SIGN_IN'; user: string}
+  | {type: 'SIGN_OUT'};
 
-//       try {
-//         user = await AsyncStorage.getItem('user');
-//       } catch (e: any) {
-//         // Restoring token failed
-//         Alert.alert('Error', e.message);
-//       }
+const authReducer = (prevState: AuthState, action: Action): AuthState => {
+  switch (action.type) {
+    case 'RESTORE_USER':
+      return {
+        ...prevState,
+        user: action.user,
+        isLoading: false,
+      };
+    case 'SIGN_IN':
+      return {
+        ...prevState,
+        isSignedOut: false,
+        user: action.user,
+      };
+    case 'SIGN_OUT':
+      return {
+        ...prevState,
+        isSignedOut: true,
+        user: null,
+      };
+    default:
+      return prevState;
+  }
+};
 
-//       // After restoring token, we may need to validate it in production apps
+export default function AuthProvider({children}: any) {
+  const [state, dispatch] = useReducer(authReducer, {
+    isLoading: true,
+    isSignedOut: false,
+    user: null,
+  });
 
-//       // This will switch to the App screen or Auth screen and this loading
-//       // screen will be unmounted and thrown away.
-//       dispatch({type: 'RESTORE_TOKEN', user});
-//     };
+  useEffect(() => {
+    const bootstrapAsync = async () => {
+      let user = null;
 
-//     bootstrapAsync();
-//   }, []);
+      try {
+        user = await AsyncStorage.getItem('user');
+      } catch (e: any) {
+        Alert.alert('Error', e.message);
+      }
+      if (user) dispatch({type: 'RESTORE_USER', user});
+    };
 
-//   const authContext = React.useMemo(
-//     () => ({
-//       signIn: async (data:{email:string,password:string}) => {
-//         // In a production app, we need to send some data (usually username, password) to server and get a token
-//         // We will also need to handle errors if sign in failed
-//         // After getting token, we need to persist the token using `SecureStore`
-//         // In the example, we'll use a dummy token
-//         await signInWithEmailAndPassword(auth, data.email, data.password)
-//         .then(userCredential => {
-//           // Signed in
-//           const user = userCredential.user;
-//           AsyncStorage.setItem('user', JSON.stringify(user));
-//           dispatch({type: 'SIGN_IN', user});
-//         //   DevSettings.reload()
-//           // navigation.reset({
-//           //   index: 0,
-//           //   routes: [{ name: screens.homeTabs }],
-//           // });
-//         })
-//         .catch(error => {
-//           const errorCode = error.code;
-//           const errorMessage = error.message;
-//           Alert.alert('Error', errorMessage);
-//         });
-       
-//       },
-//       signOut: () => dispatch({type: 'SIGN_OUT'}),
-//       signUp: async (data:{email:string,password:string}) => {
-//         // In a production app, we need to send user data to server and get a token
-//         // We will also need to handle errors if sign up failed
-//         // After getting token, we need to persist the token using `SecureStore`
-//         // In the example, we'll use a dummy token
-//         await createUserWithEmailAndPassword(auth, data.email, data.password)
-//         .then(userCredential => {
-//           // Signed in
-//           const user = userCredential.user;
-//           AsyncStorage.setItem('user', JSON.stringify(user));
-//           dispatch({type: 'SIGN_IN', user});
-//         //   navigation.navigate(screens.homeTabs);
-//         })
-//         .catch(error => {
-//           const errorCode = error.code;
-//           const errorMessage = error.message;
-//           Alert.alert('Error', errorMessage);
-//         });
-//       },
-//     }),
-//     [],
-//   );
+    bootstrapAsync();
+  }, []);
 
-//   return (
-//     <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>
-//   );
-// }
+  const authContextDispatch = useMemo(
+    () => ({
+      signIn: async (data: IAuthData) => {
+        await signInWithEmailAndPassword(auth, data.email, data.password)
+          .then(async userCredential => {
+            const user = userCredential.user;
+            await AsyncStorage.setItem('user', JSON.stringify(user));
+            dispatch({type: 'SIGN_IN', user: JSON.stringify(user)});
+          })
+          .catch(error => {
+            Alert.alert('Error', error.message);
+          });
+      },
+      signOut: async () => {
+        dispatch({type: 'SIGN_OUT'});
+        await firebaseSignOut(auth);
+        await AsyncStorage.clear();
+      },
+      signUp: async (data: IAuthData) => {
+        await createUserWithEmailAndPassword(auth, data.email, data.password)
+          .then(async userCredential => {
+            const user = userCredential.user;
+            await AsyncStorage.setItem('user', JSON.stringify(user));
+            dispatch({type: 'SIGN_IN', user: JSON.stringify(user)});
+          })
+          .catch(error => {
+            Alert.alert('Error', error.message);
+          });
+      },
+    }),
+    [],
+  );
+
+  return (
+    <AuthContext.Provider value={{...state, ...authContextDispatch}}>
+      {children}
+    </AuthContext.Provider>
+  );
+}

@@ -1,15 +1,14 @@
 import {Alert, Image, ScrollView, Text, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState, useCallback} from 'react';
 import Input from '../components/Input/Input';
 import CustomButton from '../components/CustomButton/CustomButton';
 import {authStyles as styles} from '../styles/auth';
 import {screens} from '../utils/constant';
 import validator from 'validator';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
-import {auth} from '../utils/firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '../context/AuthContext';
 
 const CreateAccount = ({navigation}: {navigation: any}) => {
+  const {signUp} = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     email: '',
@@ -17,44 +16,43 @@ const CreateAccount = ({navigation}: {navigation: any}) => {
     confirmPassword: '',
   });
 
-  // Handle input changes
-  const handleChange = (name: string) => (text: string) => {
-    setData(prevData => ({
-      ...prevData,
-      [name]: text,
-    }));
-  };
+  const handleChange = useCallback(
+    (name: string) => (text: string) => {
+      setData(prevData => ({
+        ...prevData,
+        [name]: text,
+      }));
+    },
+    [],
+  );
 
-  const handleCreate = async () => {
+  const handleCreate = useCallback(async () => {
     const {email, password, confirmPassword} = data;
 
     if (!validator.isEmail(email)) {
-      return Alert.alert('Error', 'Please enter a valid email');
+      Alert.alert('Error', 'Please enter a valid email');
+      return;
     }
 
     if (password !== confirmPassword) {
-      return Alert.alert('Error', 'Passwords do not match');
+      Alert.alert('Error', 'Passwords do not match');
+      return;
     }
 
     setLoading(true);
+    try {
+      await signUp({email, password});
+    } catch (error) {
+      Alert.alert('Error', 'Failed to create account');
+    } finally {
+      setLoading(false);
+    }
+  }, [data, signUp]);
 
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        // Signed in
-        const user = userCredential.user;
-        AsyncStorage.setItem('user', JSON.stringify(user));
-        navigation.navigate(screens.homeTabs);
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        Alert.alert('Error', errorMessage);
-      });
-    setLoading(false);
-  };
+  const isButtonDisabled = loading || Object.values(data).some(value => !value);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image source={require('../assets/app_icon.png')} style={styles.logo} />
       <Text style={styles.header}>
         Create{'\n'}your{'\n'}culturefex{'\n'}account
@@ -79,7 +77,7 @@ const CreateAccount = ({navigation}: {navigation: any}) => {
       <CustomButton
         text="Create"
         onPress={handleCreate}
-        disabled={loading || Object.values(data).some(value => !value)}
+        disabled={isButtonDisabled}
         loading={loading}
       />
       <TouchableOpacity

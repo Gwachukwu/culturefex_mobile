@@ -1,56 +1,38 @@
-import {Alert, DevSettings, Image, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useState, useCallback} from 'react';
 import Input from '../components/Input/Input';
 import CustomButton from '../components/CustomButton/CustomButton';
 import {authStyles as styles} from '../styles/auth';
 import {screens} from '../utils/constant';
 import validator from 'validator';
-import {signInWithEmailAndPassword} from 'firebase/auth';
-import {auth} from '../utils/firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '../context/AuthContext';
 
 const Login = ({navigation}: {navigation: any}) => {
+  const {signIn} = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({
-    email: '',
-    password: '',
-  });
+  const [data, setData] = useState({email: '', password: ''});
 
-  // Handle input changes
   const handleChange = (name: string) => (text: string) => {
-    setData(prevData => ({
-      ...prevData,
-      [name]: text,
-    }));
+    setData(prevData => ({...prevData, [name]: text}));
   };
 
-  const handleLogin = async () => {
-    const {email, password} = data;
-
+  const handleLogin = useCallback(async () => {
+    const {email} = data;
     if (!validator.isEmail(email)) {
-      return Alert.alert('Error', 'Please enter a valid email');
+      Alert.alert('Error', 'Please enter a valid email');
+      return;
     }
-
     setLoading(true);
+    try {
+      await signIn(data);
+    } catch (error: any) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [data, signIn]);
 
-    await signInWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        // Signed in
-        const user = userCredential.user;
-        AsyncStorage.setItem('user', JSON.stringify(user));
-        DevSettings.reload()
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{ name: screens.homeTabs }],
-        // });
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        Alert.alert('Error', errorMessage);
-      });
-    setLoading(false);
-  };
+  const isButtonDisabled = loading || !data.email || !data.password;
 
   return (
     <View style={styles.container}>
@@ -72,7 +54,7 @@ const Login = ({navigation}: {navigation: any}) => {
       <CustomButton
         text="Login"
         onPress={handleLogin}
-        disabled={loading || Object.values(data).some(value => !value)}
+        disabled={isButtonDisabled}
         loading={loading}
       />
       <TouchableOpacity

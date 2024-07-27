@@ -1,24 +1,24 @@
-import React from 'react';
-import {Button, DevSettings, StyleSheet, Text, View} from 'react-native';
-import {screens} from '../utils/constant';
+import React, { useCallback, useContext } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {signOut} from 'firebase/auth';
-import {auth} from '../utils/firebase';
+import { AuthContext } from '../context/AuthContext';
 
-const Profile = ({navigation}: {navigation: any}) => {
-  const handleLogOut = async () => {
-    await AsyncStorage.removeItem('user');
-    DevSettings.reload();
-    signOut(auth);
-  };
+const Profile = () => {
+  const { signOut } = useContext(AuthContext);
+
+  const handleLogOut = useCallback(async () => {
+    try {
+      await AsyncStorage.clear();
+      signOut();
+    } catch (error) {
+      console.error('Error clearing AsyncStorage', error);
+    }
+  }, [signOut]);
 
   return (
     <View style={styles.container}>
-      <Text>This is your profile</Text>
-      <Button
-        title="Logout"
-        onPress={handleLogOut} // Should match the type in RootStackParamList
-      />
+      <Text style={styles.profileText}>This is your profile</Text>
+      <Button title="Logout" onPress={handleLogOut} />
     </View>
   );
 };
@@ -28,5 +28,12 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  profileText: {
+    fontSize: 18,
+    marginBottom: 20,
   },
 });
