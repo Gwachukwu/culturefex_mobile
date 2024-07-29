@@ -1,19 +1,30 @@
 import React from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {screens} from '../utils/constant';
+import Tile from '../components/Tile';
 
 const Home = ({navigation}: {navigation: any}) => {
   return (
     <View style={styles.container}>
-      <Text>This is the home</Text>
-      <Button
-        title="Go to Login"
-        onPress={() => navigation.navigate(screens.login)} // Should match the type in RootStackParamList
+      <Tile
+        name="Games"
+        onPress={() => navigation.navigate(screens.quizList)}
+        backgroundImage={require('../assets/quiz.jpg')}
       />
-      <Text></Text>
-      <Button
-        title="Go to Create Account"
-        onPress={() => navigation.navigate(screens.createAccount)} // Should match the type in RootStackParamList
+      <Tile
+        name="Recipes"
+        onPress={() => navigation.navigate(screens.recipeList)}
+        backgroundImage={require('../assets/recipes.png')}
+      />
+      <Tile
+        name="Create Game"
+        onPress={() => navigation.navigate(screens.createQuiz)}
+        backgroundImage={require('../assets/create_quiz.png')}
+      />
+      <Tile
+        name="Create Recipie"
+        onPress={() => navigation.navigate(screens.createRecipe)}
+        backgroundImage={require('../assets/create_recipes.png')}
       />
     </View>
   );
@@ -24,5 +35,11 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 100,
+    paddingBottom: 150,
+    flexWrap: 'wrap',
+    alignContent: 'space-between',
   },
 });

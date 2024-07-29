@@ -4,6 +4,8 @@ export const screens = {
     home: 'Home',
     quizList: 'Quizzes',
     recipeList: 'Recipes',
-    homeTabs:'HomeTabs',
-    profile:'Profile'
+    homeTabs: 'HomeTabs',
+    profile: 'Profile',
+    createQuiz: 'Create Quiz',
+    createRecipe: 'Create Recipe'
 }

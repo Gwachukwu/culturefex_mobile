@@ -1,7 +1,7 @@
 import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
 import React, {useContext, useState, useCallback} from 'react';
 import Input from '../components/Input/Input';
-import CustomButton from '../components/CustomButton/CustomButton';
+import CustomButton from '../components/CustomButton';
 import {authStyles as styles} from '../styles/auth';
 import {screens} from '../utils/constant';
 import validator from 'validator';
