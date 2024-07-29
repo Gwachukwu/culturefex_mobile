@@ -22,7 +22,7 @@ const Home = ({navigation}: {navigation: any}) => {
         backgroundImage={require('../assets/create_quiz.png')}
       />
       <Tile
-        name="Create Recipie"
+        name="Create Recipe"
         onPress={() => navigation.navigate(screens.createRecipe)}
         backgroundImage={require('../assets/create_recipes.png')}
       />
