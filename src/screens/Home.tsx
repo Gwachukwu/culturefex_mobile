@@ -18,7 +18,7 @@ const Home = ({navigation}: {navigation: any}) => {
         />
         <Tile
           name="Recipes"
-          onPress={() => navigation.navigate(screens.recipeList)}
+          onPress={() => navigation.navigate(screens.recipeTabs)}
           backgroundImage={require('../assets/recipes.png')}
         />
       </View>

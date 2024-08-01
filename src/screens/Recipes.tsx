@@ -1,23 +1,27 @@
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
-  ScrollView,
-  Alert,
   View,
   ActivityIndicator,
   FlatList,
+  Touchable,
+  TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {fonts} from '../styles/fonts';
 import {colors} from '../styles/colors';
 import {recipesRef} from '../firebase';
 import {getDocs} from 'firebase/firestore';
 import {IDBRecipe} from '../interfaces/recipes';
-
-const renderRecipe = ({item}: {item: any}) => <Text>{item.name}</Text>;
+import RecipeListItem from '../components/RecipesListItem';
+import {useNavigation} from '@react-navigation/native';
+import IonIcons from 'react-native-vector-icons/Ionicons';
+import {screens} from '../utils/constant';
 
 const Recipes = () => {
-  const [recipes, setRecipes] = useState<IDBRecipe[]>();
+  const navigation = useNavigation<any>();
+
+  const [recipes, setRecipes] = useState<IDBRecipe[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,18 +53,37 @@ const Recipes = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Recipes</Text>
-      <View style={styles.listContainer}>
-        {loading && <ActivityIndicator size="large" color={colors.primary} />}
-        {error && <Text style={styles.error}>{error}</Text>}
-        <FlatList
-          data={recipes}
-          keyExtractor={item => item.id}
-          renderItem={renderRecipe}
-        />
-      </View>
-    </ScrollView>
+    <FlatList
+      contentContainerStyle={styles.container}
+      ListHeaderComponent={
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>Recipes</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(screens.createRecipe)}>
+            <IonIcons
+              name="add-circle-outline"
+              size={36}
+              color={colors.secondary}
+            />
+          </TouchableOpacity>
+        </View>
+      }
+      data={recipes}
+      keyExtractor={item => item.id}
+      renderItem={({item}) => (
+        <RecipeListItem item={item} navigation={navigation} />
+      )}
+      ListEmptyComponent={
+        !loading && !error ? (
+          <Text style={styles.empty}>No recipes found</Text>
+        ) : null
+      }
+      ListFooterComponent={
+        loading ? (
+          <ActivityIndicator size="large" color={colors.primary} />
+        ) : null
+      }
+    />
   );
 };
 
@@ -69,20 +92,22 @@ export default Recipes;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    flexGrow: 1,
   },
   header: {
     fontFamily: fonts.InterExtraBold,
     fontSize: 24,
-    paddingTop: 10,
+    paddingVertical: 10,
     color: colors.secondary,
+    textAlign: 'center',
   },
-  listContainer: {
-    flex: 1,
-  },
-  error: {
-    color: 'red',
+  empty: {
+    color: 'gray',
     textAlign: 'center',
     marginVertical: 16,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

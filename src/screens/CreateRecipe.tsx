@@ -128,12 +128,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     flexGrow: 1,
-    justifyContent: 'center',
   },
   header: {
     fontFamily: fonts.InterExtraBold,
     fontSize: 24,
-    paddingTop: 25,
+    paddingTop:10,
     textAlign: 'center',
     color: colors.secondary,
   },

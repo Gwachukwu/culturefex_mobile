@@ -1,8 +1,9 @@
-import {StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {TouchableWithoutFeedback} from 'react-native';
 import React from 'react';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {screens} from '../../utils/constant';
 import {styles} from './styles';
+
 const HeaderRight = ({navigation}: {navigation: any}) => {
   return (
     <TouchableWithoutFeedback

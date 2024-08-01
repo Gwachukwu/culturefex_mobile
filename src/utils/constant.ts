@@ -3,9 +3,11 @@ export const screens = {
     createAccount: 'CreateAccount',
     home: 'Home',
     quizList: 'Quizzes',
-    recipeList: 'Recipes',
+    recipeList: 'Recipes List',
     homeTabs: 'HomeTabs',
     profile: 'Profile',
     createQuiz: 'Create Quiz',
-    createRecipe: 'Create Recipe'
+    createRecipe: 'Create Recipe',
+    viewRecipe:'View recipe',
+    recipeTabs: 'Recipes'
 }

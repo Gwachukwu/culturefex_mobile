@@ -10,6 +10,7 @@ import Recipes from '../screens/Recipes';
 import {fonts} from '../styles/fonts';
 import HeaderLeft from '../components/Header/HeaderLeft';
 import HeaderRight from '../components/Header/HeaderRight';
+import RecipeStackScreen from './RecipesStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +32,7 @@ export default function HomeTabs() {
               return (
                 <MaterialIcons name={iconName} size={size} color={color} />
               );
-            case screens.recipeList:
+            case screens.recipeTabs:
               iconName = focused ? 'pot-steam' : 'pot-steam-outline';
               return (
                 <MaterialIcons name={iconName} size={size} color={color} />
@@ -48,7 +49,7 @@ export default function HomeTabs() {
       })}>
       <Tab.Screen name={screens.home} component={Home} />
       <Tab.Screen name={screens.quizList} component={QuizList} />
-      <Tab.Screen name={screens.recipeList} component={Recipes} />
+      <Tab.Screen name={screens.recipeTabs} component={RecipeStackScreen} />
     </Tab.Navigator>
   );
 }
