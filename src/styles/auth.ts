@@ -4,7 +4,7 @@ import { fonts } from "./fonts";
 
 export const authStyles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         width: "100%",
         paddingVertical: 10,
         paddingHorizontal: 20,

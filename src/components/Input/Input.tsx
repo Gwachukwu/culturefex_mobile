@@ -5,17 +5,14 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  Image,
+  TextInputProps,
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import { colors } from "../../styles/colors";
 import { fonts } from "../../styles/fonts";
 
-// Extend the InputProps interface
-interface InputProps {
-  value?: string;
-  onChangeText?: (text: string) => void;
-  placeholder?: string;
+// Extend the InputProps interface to include all TextInputProps
+interface InputProps extends TextInputProps {
   label: string;
   isPassword?: boolean; // Add this prop to toggle password visibility
 }
@@ -26,6 +23,7 @@ const Input: FC<InputProps> = ({
   placeholder = "Type here",
   label,
   isPassword = false, // Default to false if not provided
+  ...textInputProps // Capture all other TextInput props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -44,6 +42,7 @@ const Input: FC<InputProps> = ({
           value={value}
           placeholder={placeholder}
           secureTextEntry={isPassword && !showPassword} // Conditionally apply secureTextEntry
+          {...textInputProps} // Pass remaining TextInput props to TextInput
         />
         {isPassword && (
           <TouchableOpacity
@@ -87,7 +86,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 5,
     backgroundColor: colors.neutral,
-    color:"black",
+    color: "black",
     borderRadius: 2,
   },
   toggleButton: {

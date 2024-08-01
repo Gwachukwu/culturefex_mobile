@@ -1,25 +1,28 @@
-import React, { useReducer, useEffect, useMemo, ReactNode } from 'react';
-import { AuthContext } from './AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
-import { auth } from '../utils/firebase';
+import React, {useReducer, useEffect, useMemo, ReactNode} from 'react';
+import {AuthContext} from './AuthContext';
+import {Alert} from 'react-native';
+import {auth, db} from '../firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
+  User,
+  onAuthStateChanged,
 } from 'firebase/auth';
-import { IAuthData } from './types';
+import {IAuthData} from './types';
+import {doc, setDoc} from 'firebase/firestore';
+import {database} from '../firebase/database';
 
 interface AuthState {
   isLoading: boolean;
   isSignedOut: boolean;
-  user: string | null;
+  user: User | null;
 }
 
 type Action =
-  | { type: 'RESTORE_USER'; user: string | null }
-  | { type: 'SIGN_IN'; user: string }
-  | { type: 'SIGN_OUT' };
+  | {type: 'RESTORE_USER'; user: User | null}
+  | {type: 'SIGN_IN'; user: User}
+  | {type: 'SIGN_OUT'};
 
 const authReducer = (prevState: AuthState, action: Action): AuthState => {
   switch (action.type) {
@@ -50,7 +53,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-export default function AuthProvider({ children }: AuthProviderProps) {
+export default function AuthProvider({children}: AuthProviderProps) {
   const [state, dispatch] = useReducer(authReducer, {
     isLoading: true,
     isSignedOut: false,
@@ -58,52 +61,62 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   });
 
   useEffect(() => {
-    const bootstrapAsync = async () => {
-      try {
-        const user = await AsyncStorage.getItem('user');
-        dispatch({ type: 'RESTORE_USER', user: user ? JSON.parse(user) : null });
-      } catch (e: any) {
-        Alert.alert('Error', e.message);
+    const unsub = onAuthStateChanged(auth, user => {
+      if (user) {
+        dispatch({type: 'RESTORE_USER', user: user ? user : null});
+      } else {
+        dispatch({type: 'SIGN_OUT'});
       }
-    };
-
-    bootstrapAsync();
+    });
+    return unsub;
   }, []);
 
-  const authContextDispatch = useMemo(() => ({
-    signIn: async (data: IAuthData) => {
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-        const user = userCredential.user;
-        await AsyncStorage.setItem('user', JSON.stringify(user));
-        dispatch({ type: 'SIGN_IN', user: JSON.stringify(user) });
-      } catch (error: any) {
-        Alert.alert('Error', error.message);
-      }
-    },
-    signOut: async () => {
-      try {
-        await firebaseSignOut(auth);
-        await AsyncStorage.clear();
-        dispatch({ type: 'SIGN_OUT' });
-      } catch (error: any) {
-        Alert.alert('Error', error.message);
-      }
-    },
-    signUp: async (data: IAuthData) => {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-        const user = userCredential.user;
-        await AsyncStorage.setItem('user', JSON.stringify(user));
-        dispatch({ type: 'SIGN_IN', user: JSON.stringify(user) });
-      } catch (error: any) {
-        Alert.alert('Error', error.message);
-      }
-    },
-  }), []);
+  const authContextDispatch = useMemo(
+    () => ({
+      signIn: async (data: IAuthData) => {
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            data.email,
+            data.password,
+          );
+          const user = userCredential.user;
+          dispatch({type: 'SIGN_IN', user: user});
+        } catch (error: any) {
+          Alert.alert('Error', error.message);
+        }
+      },
+      signOut: async () => {
+        try {
+          await firebaseSignOut(auth);
+          dispatch({type: 'SIGN_OUT'});
+        } catch (error: any) {
+          Alert.alert('Error', error.message);
+        }
+      },
+      signUp: async (data: IAuthData) => {
+        try {
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            data.email,
+            data.password,
+          );
+          const user = userCredential.user;
+          await setDoc(doc(db, database.users, user?.uid), {
+            email: user?.email,
+            userId: user?.uid,
+          });
+          dispatch({type: 'SIGN_IN', user: user});
+        } catch (error: any) {
+          Alert.alert('Error', error.message);
+        }
+      },
+    }),
+    [],
+  );
 
   return (
-    <AuthContext.Provider value={{ ...state, ...authContextDispatch }}>
+    <AuthContext.Provider value={{...state, ...authContextDispatch}}>
       {children}
     </AuthContext.Provider>
   );

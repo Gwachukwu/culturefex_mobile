@@ -6,7 +6,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Home from '../screens/Home';
 import QuizList from '../screens/QuizList';
-import RecipeList from '../screens/RecipeList';
+import Recipes from '../screens/Recipes';
 import {fonts} from '../styles/fonts';
 import HeaderLeft from '../components/Header/HeaderLeft';
 import HeaderRight from '../components/Header/HeaderRight';
@@ -48,7 +48,7 @@ export default function HomeTabs() {
       })}>
       <Tab.Screen name={screens.home} component={Home} />
       <Tab.Screen name={screens.quizList} component={QuizList} />
-      <Tab.Screen name={screens.recipeList} component={RecipeList} />
+      <Tab.Screen name={screens.recipeList} component={Recipes} />
     </Tab.Navigator>
   );
 }

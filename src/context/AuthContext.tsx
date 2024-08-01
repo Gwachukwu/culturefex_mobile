@@ -3,7 +3,6 @@ import {AuthContextType, IAuthData} from './types';
 
 const defaultAuthContextValue: AuthContextType = {
   isLoading: true,
-  isSignedOut: true,
   user: null,
   signIn: async (data: IAuthData) => {},
   signOut: async () => {},

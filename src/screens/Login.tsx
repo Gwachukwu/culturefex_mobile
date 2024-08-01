@@ -1,4 +1,4 @@
-import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, Text, TouchableOpacity, ScrollView} from 'react-native';
 import React, {useContext, useState, useCallback} from 'react';
 import Input from '../components/Input/Input';
 import CustomButton from '../components/CustomButton';
@@ -35,7 +35,7 @@ const Login = ({navigation}: {navigation: any}) => {
   const isButtonDisabled = loading || !data.email || !data.password;
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image source={require('../assets/app_icon.png')} style={styles.logo} />
       <Text style={styles.header}>
         Login{'\n'}to{'\n'}culturefex
@@ -62,7 +62,7 @@ const Login = ({navigation}: {navigation: any}) => {
         style={styles.anotherPage}>
         <Text style={styles.createText}>Create account</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
