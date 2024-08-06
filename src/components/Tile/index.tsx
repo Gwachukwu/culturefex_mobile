@@ -1,23 +1,27 @@
-// Tile.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, ImageSourcePropType, StyleProp, ViewStyle } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // You can use any icon set from react-native-vector-icons
+import Icon from 'react-native-vector-icons/Ionicons';
 import { colors } from '../../styles/colors';
 
 interface TileProps {
   name: string;
   iconName?: string;
-  backgroundImage?: ImageSourcePropType;
+  backgroundImage?: ImageSourcePropType | string; // Support both require() and base64
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
 }
 
 const Tile: React.FC<TileProps> = ({ name, iconName, backgroundImage, onPress, style }) => {
+  // Determine the source based on the type of backgroundImage prop
+  const backgroundImageSource = typeof backgroundImage === 'string' 
+    ? { uri: `data:image/jpeg;base64,${backgroundImage}` }
+    : backgroundImage;
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={[styles.tile, style]} onPress={onPress}>
-        {backgroundImage ? (
-          <ImageBackground source={backgroundImage} style={styles.backgroundImage} imageStyle={{ borderRadius: 10 }}>
+        {backgroundImageSource ? (
+          <ImageBackground source={backgroundImageSource} style={styles.backgroundImage} imageStyle={{ borderRadius: 10 }}>
             {/* Empty ImageBackground to render the background image */}
           </ImageBackground>
         ) : (

@@ -9,7 +9,7 @@ import {fonts} from '../styles/fonts';
 const Home = ({navigation}: {navigation: any}) => {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.sectionHeader}>PLAY</Text>
+      <Text style={styles.sectionHeader}>EXPLORE</Text>
       <View style={styles.section}>
         <Tile
           name="Games"

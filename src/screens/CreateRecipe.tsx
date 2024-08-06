@@ -115,7 +115,7 @@ const CreateRecipe = () => {
       <CustomButton
         text="Add Recipe"
         onPress={handleCreate}
-        disabled={isButtonDisabled}
+        // disabled={isButtonDisabled}
         loading={loading}
       />
     </ScrollView>

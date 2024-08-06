@@ -3,6 +3,7 @@ import React from 'react';
 import {IDBRecipe} from '../../interfaces/recipes';
 import {colors} from '../../styles/colors';
 import {screens} from '../../utils/constant';
+import Tile from '../Tile';
 
 const RecipeListItem = ({
   item,
@@ -12,10 +13,15 @@ const RecipeListItem = ({
   navigation: any;
 }) => {
   return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate(screens.viewRecipe, {recipe: item})}>
-      <Text style={styles.text}>{item.name}</Text>
-    </TouchableOpacity>
+    // <TouchableOpacity
+    //   onPress={() => navigation.navigate(screens.viewRecipe, {recipe: item})}>
+    //   <Text style={styles.text}>{item.name}</Text>
+    // </TouchableOpacity>
+    <Tile
+    name={item.name}
+    onPress={() => navigation.navigate(screens.viewRecipe, {recipe: item})}
+    backgroundImage={item.image}
+  />
   );
 };
 

@@ -5,7 +5,6 @@ import {
   View,
   ActivityIndicator,
   FlatList,
-  Touchable,
   TouchableOpacity,
 } from 'react-native';
 import {fonts} from '../styles/fonts';
@@ -71,8 +70,12 @@ const Recipes = () => {
       data={recipes}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
-        <RecipeListItem item={item} navigation={navigation} />
+        <View style={styles.gridItem}>
+          <RecipeListItem item={item} navigation={navigation} />
+        </View>
       )}
+      numColumns={2}
+      columnWrapperStyle={styles.row}
       ListEmptyComponent={
         !loading && !error ? (
           <Text style={styles.empty}>No recipes found</Text>
@@ -109,5 +112,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  row: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  gridItem: {
+    flex: 1,
+    margin: 5,
+    maxWidth: '48%',
   },
 });

@@ -33,9 +33,9 @@ const Profile = () => {
         color="black"
         style={styles.portrait}
       />
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <Text style={styles.editButton}>Edit Profile</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View style={styles.detailsContainer}>
         <Text style={styles.details}>Email: {user?.email}</Text>
       </View>
