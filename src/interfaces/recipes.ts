@@ -9,7 +9,3 @@ export interface IRecipe {
   export interface IDBRecipe extends IRecipe{
     id:string
   }
-
-  export type RootStackParamList = {
-    ViewRecipe: { recipe: IDBRecipe };
-  };

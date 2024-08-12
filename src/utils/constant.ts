@@ -1,15 +1,19 @@
+import { IQuestion } from "../interfaces/quizzes";
+
 export const screens = {
     login: 'Login',
     createAccount: 'CreateAccount',
     home: 'Home',
-    quizList: 'Quizzes',
+    quizList: 'Quizzes List',
     recipeList: 'Recipes List',
     homeTabs: 'HomeTabs',
     profile: 'Profile',
     createQuiz: 'Create Quiz',
     createRecipe: 'Create Recipe',
-    viewRecipe:'View recipe',
-    recipeTabs: 'Recipes'
+    viewRecipe:'View Recipe',
+    recipeTabs: 'Recipes',
+    viewQuiz:'View Quiz',
+    quizTabs: 'Quizzes',
 }
 
 export const questionTemplate: IQuestion = {

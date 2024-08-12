@@ -78,7 +78,7 @@ const Recipes = () => {
       columnWrapperStyle={styles.row}
       ListEmptyComponent={
         !loading && !error ? (
-          <Text style={styles.empty}>No recipes found</Text>
+          <Text style={styles.empty}>No recipe found</Text>
         ) : null
       }
       ListFooterComponent={

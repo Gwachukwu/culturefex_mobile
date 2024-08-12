@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import React from 'react';
 import {RouteProp, useRoute} from '@react-navigation/native';
-import {RootStackParamList} from '../interfaces/recipes';
 import {colors} from '../styles/colors';
 import {fonts} from '../styles/fonts';
+import { RootStackParamList } from '../interfaces/common';
 
 type ViewRecipeRouteProp = RouteProp<RootStackParamList, 'ViewRecipe'>;
 const ViewRecipe = () => {

@@ -13,7 +13,7 @@ const Home = ({navigation}: {navigation: any}) => {
       <View style={styles.section}>
         <Tile
           name="Games"
-          onPress={() => navigation.navigate(screens.quizList)}
+          onPress={() => navigation.navigate(screens.quizTabs)}
           backgroundImage={require('../assets/quiz.jpg')}
         />
         <Tile
@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontFamily: fonts.InterExtraBold,
-    marginLeft:35,
+    marginLeft: 35,
     fontSize: 20,
-    marginTop:'auto',
-    marginBottom:10
+    marginTop: 'auto',
+    marginBottom: 10,
   },
 });

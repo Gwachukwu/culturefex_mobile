@@ -11,6 +11,7 @@ import {fonts} from '../styles/fonts';
 import HeaderLeft from '../components/Header/HeaderLeft';
 import HeaderRight from '../components/Header/HeaderRight';
 import RecipeStackScreen from './RecipesStack';
+import QuizStackScreen from './QuizzesStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,7 +28,7 @@ export default function HomeTabs() {
             case screens.home:
               iconName = focused ? 'home' : 'home-outline';
               return <IonIcons name={iconName} size={size} color={color} />;
-            case screens.quizList:
+            case screens.quizTabs:
               iconName = focused ? 'chat-question' : 'chat-question-outline';
               return (
                 <MaterialIcons name={iconName} size={size} color={color} />
@@ -48,7 +49,7 @@ export default function HomeTabs() {
         headerTitleStyle: styles.headerTitle,
       })}>
       <Tab.Screen name={screens.home} component={Home} />
-      <Tab.Screen name={screens.quizList} component={QuizList} />
+      <Tab.Screen name={screens.quizTabs} component={QuizStackScreen} />
       <Tab.Screen name={screens.recipeTabs} component={RecipeStackScreen} />
     </Tab.Navigator>
   );

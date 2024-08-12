@@ -9,6 +9,7 @@ import {AuthContext} from '../context/AuthContext';
 import {quizzesRef} from '../firebase';
 import {addDoc} from 'firebase/firestore';
 import {areAllFieldsFilled} from '../utils/methods';
+import { IQuiz } from '../interfaces/quizzes';
 
 const initialState = {
   title: '',
