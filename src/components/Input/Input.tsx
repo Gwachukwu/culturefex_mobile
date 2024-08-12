@@ -6,15 +6,19 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInputProps,
+  TextStyle,
+  ViewStyle,
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import { colors } from "../../styles/colors";
 import { fonts } from "../../styles/fonts";
 
-// Extend the InputProps interface to include all TextInputProps
+// Extend the InputProps interface to include all TextInputProps and additional props
 interface InputProps extends TextInputProps {
   label: string;
   isPassword?: boolean; // Add this prop to toggle password visibility
+  labelStyle?: TextStyle; // Add this prop for custom label styling
+  containerStyle?: ViewStyle; // Optional: Add a prop for custom container styling
 }
 
 const Input: FC<InputProps> = ({
@@ -23,6 +27,8 @@ const Input: FC<InputProps> = ({
   placeholder = "Type here",
   label,
   isPassword = false, // Default to false if not provided
+  labelStyle, // Custom label styling
+  containerStyle, // Optional: Custom container styling
   ...textInputProps // Capture all other TextInput props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,8 +39,8 @@ const Input: FC<InputProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+    <View style={[styles.container, containerStyle]}>
+      <Text style={[styles.label, labelStyle]}>{label}</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}

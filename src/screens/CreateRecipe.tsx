@@ -7,9 +7,8 @@ import ImagePicker from '../components/ImagePicker';
 import TextArea from '../components/Textarea';
 import CustomButton from '../components/CustomButton';
 import Select from '../components/Select';
-import {addDoc, doc, setDoc} from 'firebase/firestore';
-import {db, recipesRef} from '../firebase';
-import {database} from '../firebase/database';
+import {addDoc} from 'firebase/firestore';
+import {recipesRef} from '../firebase';
 import {AuthContext} from '../context/AuthContext';
 import { IRecipe } from '../interfaces/recipes';
 

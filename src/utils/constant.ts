@@ -11,3 +11,25 @@ export const screens = {
     viewRecipe:'View recipe',
     recipeTabs: 'Recipes'
 }
+
+export const questionTemplate: IQuestion = {
+    questionText: '',
+    options: [
+      {
+        option: '',
+        isTrue: true,
+      },
+      {
+        option: '',
+        isTrue: false,
+      },
+      {
+        option: '',
+        isTrue: false,
+      },
+      {
+        option: '',
+        isTrue: false,
+      },
+    ],
+  };
